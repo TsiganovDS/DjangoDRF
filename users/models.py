@@ -1,5 +1,7 @@
-from django.db import models
+import django_filters
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class User(AbstractUser):
@@ -25,3 +27,37 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+
+
+class Payment(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ("cash", "Наличные"),
+        ("transfer", "Перевод на счет"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    paid_course = models.ForeignKey(
+        "lms.Course", on_delete=models.CASCADE, null=True, blank=True
+    )
+    paid_lesson = models.ForeignKey(
+        "lms.Lesson", on_delete=models.CASCADE, null=True, blank=True
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES)
+
+    def __str__(self):
+        return f"Payment {self.user} by {self.user.username}"
+
+
+class PaymentFilter(django_filters.FilterSet):
+    course = django_filters.NumberFilter(field_name="lesson_course_id")
+    lesson = django_filters.NumberFilter(field_name="lesson_id")
+    payment_method = django_filters.CharFilter(
+        field_name="payment_method", lookup_expr="icontains"
+    )
+    payment_date = django_filters.OrderingFilter(fields=("payment_date",))
+
+    class Meta:
+        model = Payment
+        fields = ["course", "lesson", "payment_method", "payment_date"]

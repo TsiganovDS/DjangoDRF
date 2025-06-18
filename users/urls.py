@@ -1,5 +1,8 @@
 from django.urls import path
-from .views import UserList, UserDetail, UserCreate, UserProfileUpdate, UserDelete
+
+from .views import UserCreate, UserDelete, UserDetail, UserList, UserProfileUpdate
+
+app_name = "users"
 
 urlpatterns = [
     path("users/", UserList.as_view(), name="user-list"),
