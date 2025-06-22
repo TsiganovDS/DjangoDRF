@@ -1,6 +1,6 @@
 import django_filters
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 
@@ -47,7 +47,7 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES)
 
     def __str__(self):
-        return f"Payment {self.user} by {self.user.username}"
+        return f"Payment {self.id} by {self.user.email} for {self.amount} {self.payment_method}"
 
 
 class PaymentFilter(django_filters.FilterSet):
@@ -61,3 +61,20 @@ class PaymentFilter(django_filters.FilterSet):
     class Meta:
         model = Payment
         fields = ["course", "lesson", "payment_method", "payment_date"]
+
+
+class ModeratorGroup(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.group.name
+
+
+class ModeratorPermissions:
+    def __init__(self):
+        self.permissions = {
+            "view_lessons": Permission.objects.get(code_name="view_lesson"),
+            "edit_lessons": Permission.objects.get(code_name="change_lesson"),
+            "view_courses": Permission.objects.get(code_name="view_course"),
+            "edit_courses": Permission.objects.get(code_name="change_course"),
+        }
