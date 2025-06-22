@@ -1,32 +1,32 @@
-from django_filters import OrderingFilter
+import django_filters
+from django_filters.rest_framework import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Payment, PaymentFilter, User
-from .serializers import PaymentSerializer, UserProfileSerializer
+from .serializers import (
+    PaymentSerializer,
+    UserProfileSerializer,
+    UserRegistrationSerializer,
+)
 
 
-class UserList(generics.ListAPIView):
+class UserBaseView:
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
+
+
+class UserDetail(UserBaseView, generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class UserCreate(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
+class UserCreate(UserBaseView, generics.CreateAPIView):
     permission_classes = []
 
 
-class UserDelete(generics.DestroyAPIView):
-    queryset = User.objects.all()
+class UserDelete(UserBaseView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
@@ -38,13 +38,17 @@ class UserProfileView(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
 
 
-class UserProfileUpdate(generics.UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
+class UserProfileUpdate(UserBaseView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
+
+
+class PaymentFilter(django_filters.FilterSet):
+    class Meta:
+        model = Payment
+        fields = ["payment_date", "amount"]
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -54,3 +58,21 @@ class PaymentViewSet(viewsets.ModelViewSet):
     filter_set_class = PaymentFilter
     ordering_fields = ["payment_date"]
     ordering = ["payment_date"]
+
+
+class UserRegistrationView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class UserListView(UserBaseView, generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UserDetailView(UserBaseView, generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    permission_classes = [permissions.AllowAny]

@@ -15,3 +15,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "phone", "city", "avatar", "payments"]
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["email", "password", "phone", "city"]
+
+    def create(self, validated_data):
+        user = User(validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
