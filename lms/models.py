@@ -8,7 +8,9 @@ class Course(models.Model):
     preview_image = models.ImageField(upload_to="course_previews/")
     description = models.TextField()
     users = models.ManyToManyField(User, related_name="courses")
-    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name="owned_courses")
+    owner = models.ForeignKey(
+        User, null=True, on_delete=models.CASCADE, related_name="owned_courses"
+    )
 
     class Meta:
         verbose_name = "Курс"
@@ -24,7 +26,9 @@ class Lesson(models.Model):
     preview_image = models.ImageField(upload_to="lesson_previews/")
     video_link = models.URLField()
     course = models.ForeignKey(Course, related_name="lessons", on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name="owned_lessons")
+    owner = models.ForeignKey(
+        User, null=True, on_delete=models.CASCADE, related_name="owned_lessons"
+    )
 
     class Meta:
         verbose_name = "Урок"
