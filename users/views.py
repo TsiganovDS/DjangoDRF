@@ -1,11 +1,10 @@
 import django_filters
-from django_filters.rest_framework import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, viewsets, permissions
+from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+from rest_framework import generics, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Payment, PaymentFilter, User
+from .models import Payment, User
 from .serializers import (
     PaymentSerializer,
     UserProfileSerializer,
