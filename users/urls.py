@@ -1,15 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    CustomTokenObtainPairView,
-    PaymentViewSet,
-    UserDelete,
-    UserDetail,
-    UserListView,
-    UserProfileView,
-    UserRegistrationView,
-)
+from .views import (CustomTokenObtainPairView, PaymentViewSet, UserDelete,
+                    UserDetail, UserListView, UserProfileView,
+                    UserRegistrationView)
 
 router = DefaultRouter()
 router.register(r"users", UserProfileView)
