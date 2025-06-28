@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
-
 load_dotenv()
 
 
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'drf_yasg',
     'users',
     'lms',
 
@@ -90,6 +89,8 @@ DATABASES = {
         'PASSWORD': os.getenv('PASSWORD'),
         'HOST': os.getenv('HOST'),
         'PORT': os.getenv('PORT'),
+        'STRIPE_SECRET_KEY': os.getenv('STRIPE_SECRET_KEY'),
+        'STRIPE_PUBLISH_ABLE_KEY': os.getenv('STRIPE_PUBLISH_ABLE_KEY'),
     }
 }
 
@@ -150,8 +151,8 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'dm.tsiganov@gmail.com'
-EMAIL_HOST_PASSWORD = 'qaosiklzruvbsyqw'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'users.User'

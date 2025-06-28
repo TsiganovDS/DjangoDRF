@@ -1,0 +1,9 @@
+{% extends 'lms/base.html' %}
+
+{% block title %}Успех!{% endblock %}
+
+{% block content %}
+    <h2>Спасибо за оплату, Дима!</h2>
+    <p>Платёж прошёл успешно. Всё чётко!</p>
+    <a href="{% url 'lms:index' %}">На главную</a>
+{% endblock %}
