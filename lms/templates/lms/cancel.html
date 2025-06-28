@@ -1,0 +1,9 @@
+{% extends 'lms/base.html' %}
+
+{% block title %}Оплата отменена{% endblock %}
+
+{% block content %}
+    <h2>Оплата была отменена</h2>
+    <p>Если что, всегда можно попробовать ещё раз.</p>
+    <a href="{% url 'lms:index' %}">На главную</a>
+{% endblock %}

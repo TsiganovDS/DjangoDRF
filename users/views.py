@@ -1,15 +1,19 @@
+import os
+
 import django_filters
+import stripe
 from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+from dotenv import load_dotenv
 from rest_framework import generics, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Payment, User
-from .serializers import (
-    PaymentSerializer,
-    UserProfileSerializer,
-    UserRegistrationSerializer,
-)
+from .serializers import (PaymentSerializer, UserProfileSerializer,
+                          UserRegistrationSerializer)
+
+load_dotenv()
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 
 class UserBaseView:
@@ -54,13 +58,14 @@ class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = (DjangoFilterBackend, OrderingFilter)
-    filter_set_class = PaymentFilter
+    filterset_class = PaymentFilter
     ordering_fields = ["payment_date"]
     ordering = ["payment_date"]
 
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
+    template_name = "lms/register.html"
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
 
