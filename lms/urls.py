@@ -1,10 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from .views import (CourseSubscribeAPIView, CourseViewSet,
-                    CreateCheckoutSessionView, CreatePaymentView,
-                    CreatePriceView, CreateProductView, LessonViewSet,
-                    StripeSessionStatusView)
+from .views import (
+    CourseSubscribeAPIView,
+    CourseViewSet,
+    CreateCheckoutSessionView,
+    CreatePaymentView,
+    CreatePriceView,
+    CreateProductView,
+    LessonViewSet,
+    StripeSessionStatusView,
+)
 
 app_name = "lms"
 

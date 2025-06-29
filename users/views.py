@@ -1,19 +1,15 @@
-import os
-
 import django_filters
-import stripe
 from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
-from dotenv import load_dotenv
 from rest_framework import generics, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Payment, User
-from .serializers import (PaymentSerializer, UserProfileSerializer,
-                          UserRegistrationSerializer)
-
-load_dotenv()
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+from .serializers import (
+    PaymentSerializer,
+    UserProfileSerializer,
+    UserRegistrationSerializer,
+)
 
 
 class UserBaseView:

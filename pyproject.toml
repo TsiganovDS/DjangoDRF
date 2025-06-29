@@ -16,10 +16,7 @@ dependencies = [
     "django-redis (>=6.0.0,<7.0.0)",
     "djangorestframework (>=3.16.0,<4.0.0)",
     "django-filter (>=25.1,<26.0)",
-    "flake8 (>=7.2.0,<8.0.0)",
-    "isort (>=6.0.1,<7.0.0)",
     "django (>=5.2.3,<6.0.0)",
-    "black (>=25.1.0,<26.0.0)",
     "coreapi (>=2.3.3,<3.0.0)"
 ]
 
@@ -27,3 +24,9 @@ dependencies = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.lint.dependencies]
+black = "^25.1.0"
+isort = "^6.0.1"
+flake8 = "^7.3.0"
+

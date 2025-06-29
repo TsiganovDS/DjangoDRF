@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -77,6 +78,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY'),
+STRIPE_PUBLISH_ABLE_KEY = os.getenv('STRIPE_PUBLISH_ABLE_KEY')
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -89,8 +93,6 @@ DATABASES = {
         'PASSWORD': os.getenv('PASSWORD'),
         'HOST': os.getenv('HOST'),
         'PORT': os.getenv('PORT'),
-        'STRIPE_SECRET_KEY': os.getenv('STRIPE_SECRET_KEY'),
-        'STRIPE_PUBLISH_ABLE_KEY': os.getenv('STRIPE_PUBLISH_ABLE_KEY'),
     }
 }
 
@@ -144,7 +146,7 @@ CACHES = {
     }
 }
 
-
+SITE_ID = 1
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
