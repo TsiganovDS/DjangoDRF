@@ -2,6 +2,7 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
 from rest_framework import generics, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.reverse import reverse_lazy
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Payment, User
@@ -62,6 +63,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     template_name = "lms/register.html"
+    success_url = reverse_lazy('lms:index')
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
 

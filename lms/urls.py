@@ -9,7 +9,7 @@ from .views import (
     CreatePriceView,
     CreateProductView,
     LessonViewSet,
-    StripeSessionStatusView,
+    StripeSessionStatusView, UpdateCourseView, HomePageView,
 )
 
 app_name = "lms"
@@ -38,4 +38,6 @@ urlpatterns = [
         StripeSessionStatusView.as_view(),
         name="stripe-session-status",
     ),
+    path('course/update/<int:course_id>/', UpdateCourseView.as_view(), name='update_course'),
+    path('', HomePageView.as_view(), name='index'),
 ]

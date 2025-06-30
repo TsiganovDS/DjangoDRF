@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status, viewsets
@@ -10,6 +11,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .tasks import send_course_update_email
+
 
 from users.management.commands.stripe_service import (
     create_checkout_session,
@@ -27,33 +30,53 @@ from .serializers import (
     ProductSerializer,
 )
 
+class HomePageView(TemplateView):
+    template_name = 'lms/index.html'
 
-class CourseViewSet(viewsets.ModelViewSet):
+
+class BaseViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsModeratorReadOnly, IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.all()
+        if user.groups.filter(name="Модераторы").exists():
+            return queryset
+        return queryset.filter(owner=user)
+
+
+class CourseViewSet(BaseViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAuthenticated, IsModeratorReadOnly, IsOwnerOrReadOnly]
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Course.objects.all()
-        if user.groups.filter(name="Модераторы").exists():
-            return queryset
-        return queryset.filter(owner=user)
 
 
-class LessonViewSet(viewsets.ModelViewSet):
+class LessonViewSet(BaseViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAuthenticated, IsModeratorReadOnly, IsOwnerOrReadOnly]
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Lesson.objects.all()
-        if user.groups.filter(name="Модераторы").exists():
-            return queryset
-        return queryset.filter(owner=user)
+
+class UpdateCourseView(View):
+    template_name = 'lms/update_course.html'
+
+    def get(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+        return render(request, self.template_name, {'course': course})
+
+    def post(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+        course.title = request.POST.get('title')
+        course.description = request.POST.get('description')
+        course.save()
+
+        subscribers = course.subscribers.valueslist('email', flat=True)
+        subject = f'Обновление курса: {course.title}'
+        message = 'В курсе появились новые материалы! Проверьте обновления.'
+
+        send_course_update_email.delay(subject, message, list(subscribers))
+
+        return redirect('course-detail', course_id=course.id)
 
 
 class CourseSubscribeAPIView(APIView):
@@ -97,6 +120,8 @@ class CreatePaymentView(View):
             price_id = create_price(product_id, amount)
             checkout_url = create_checkout_session(price_id)
             return redirect(checkout_url)
+        except stripe.error.StripeError as stripe_error:
+            return render(request, "lms/index.html", {"error": str(stripe_error)})
         except Exception as e:
             return render(request, "lms/index.html", {"error": str(e)})
 
