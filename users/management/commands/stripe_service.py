@@ -1,11 +1,7 @@
-import os
-
 import stripe
-from dotenv import load_dotenv
+from django.conf import settings
 
-load_dotenv()
-
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def create_product(name):
@@ -20,13 +16,13 @@ def create_price(product_id, amount, currency="rub"):
     """Создает цену в stripe"""
     price = stripe.Price.create(
         product=product_id,
-        unit_amount=int(amount * 100),
+        unit_amount=int(round(amount * 100)),
         currency=currency,
     )
     return price.id
 
 
-def create_checkout_session(price_id):
+def create_checkout_session(price_id, success_url, cancel_url):
     """Создает ссесию на оплату в stripe"""
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
@@ -37,7 +33,7 @@ def create_checkout_session(price_id):
             }
         ],
         mode="payment",
-        success_url="lms:success",
-        cancel_url="lms:cancel",
+        succes_surl=success_url,
+        cancel_url=cancel_url,
     )
     return session.get("id"), session.get("url")

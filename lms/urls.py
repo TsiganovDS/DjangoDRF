@@ -1,10 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from .views import (CourseSubscribeAPIView, CourseViewSet,
-                    CreateCheckoutSessionView, CreatePaymentView,
-                    CreatePriceView, CreateProductView, LessonViewSet,
-                    StripeSessionStatusView)
+from .views import (
+    CourseSubscribeAPIView,
+    CourseViewSet,
+    CreateCheckoutSessionView,
+    CreatePaymentView,
+    CreatePriceView,
+    CreateProductView,
+    LessonViewSet,
+    StripeSessionStatusView, UpdateCourseView, HomePageView,
+)
 
 app_name = "lms"
 
@@ -32,4 +38,6 @@ urlpatterns = [
         StripeSessionStatusView.as_view(),
         name="stripe-session-status",
     ),
+    path('course/update/<int:course_id>/', UpdateCourseView.as_view(), name='update_course'),
+    path('', HomePageView.as_view(), name='index'),
 ]
