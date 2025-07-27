@@ -63,7 +63,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     template_name = "lms/register.html"
-    success_url = reverse_lazy('lms:index')
+    success_url = reverse_lazy("lms:index")
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
 

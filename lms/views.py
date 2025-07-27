@@ -30,8 +30,9 @@ from .serializers import (
     ProductSerializer,
 )
 
+
 class HomePageView(TemplateView):
-    template_name = 'lms/index.html'
+    template_name = "lms/index.html"
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -58,25 +59,25 @@ class LessonViewSet(BaseViewSet):
 
 
 class UpdateCourseView(View):
-    template_name = 'lms/update_course.html'
+    template_name = "lms/update_course.html"
 
     def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
-        return render(request, self.template_name, {'course': course})
+        return render(request, self.template_name, {"course": course})
 
     def post(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
-        course.title = request.POST.get('title')
-        course.description = request.POST.get('description')
+        course.title = request.POST.get("title")
+        course.description = request.POST.get("description")
         course.save()
 
-        subscribers = course.subscribers.valueslist('email', flat=True)
-        subject = f'Обновление курса: {course.title}'
-        message = 'В курсе появились новые материалы! Проверьте обновления.'
+        subscribers = course.subscribers.valueslist("email", flat=True)
+        subject = f"Обновление курса: {course.title}"
+        message = "В курсе появились новые материалы! Проверьте обновления."
 
         send_course_update_email.delay(subject, message, list(subscribers))
 
-        return redirect('course-detail', course_id=course.id)
+        return redirect("course-detail", course_id=course.id)
 
 
 class CourseSubscribeAPIView(APIView):
