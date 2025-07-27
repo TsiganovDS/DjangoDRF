@@ -7,7 +7,6 @@ from datetime import timedelta
 from config.settings import EMAIL_HOST_USER
 
 
-
 @shared_task
 def send_course_update_email(subject, message, recipient_list):
     send_mail(
@@ -23,8 +22,6 @@ def send_course_update_email(subject, message, recipient_list):
 def block_inactive_users():
     User = get_user_model()
     month_ago = timezone.now() - timedelta(days=30)
-    users = User.objects.filter(is_active=True).filter(
-        last_login_lt=month_ago
-    )
+    users = User.objects.filter(is_active=True).filter(last_login_lt=month_ago)
     count = users.update(is_active=False)
-    return f'Заблокировано пользователей: {count}'
+    return f"Заблокировано пользователей: {count}"
