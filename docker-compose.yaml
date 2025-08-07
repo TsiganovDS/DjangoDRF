@@ -8,14 +8,13 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      SECRET_KEY: dev-key
+         SECRET_KEY: 'django-insecure-3ut-4_%$u#!mj1dp%2k6h2i7icu_r$#zb!3&&hbv12_+@f!u($'
       DEBUG: 'True'
-      POSTGRES_DB: DjangoDRF
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      DB_HOST: db
-      DB_PORT: 5432
+      POSTGRES_DB: 'DjangoDRF'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '1234'
+      DB_HOST: 'db'
+      DB_PORT: '5432'
       STRIPE_SECRET_KEY: settings.STRIPE_SECRET_KEY
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
