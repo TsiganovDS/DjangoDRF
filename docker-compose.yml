@@ -1,89 +1,45 @@
+version: '3.8'
+
 services:
-  web:
+  backend:
     build: .
-    networks:
-      - my_network
-    command: >
-      bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
-      - static_volume:/code/static
+      - .:/app
     ports:
       - "8000:8000"
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "8000" ]
-      interval: 30s
-      timeout: 30s
-      retries: 3
+    environment:
+      SECRET_KEY: dev-key
+      DEBUG: 'True'
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      STRIPE_API_KEY: sk_test_123456
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
     depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - db
+      - redis
 
   db:
-    image: postgres:17.0
-    networks:
-      - my_network
-    env_file:
-      - ./.env
-    expose:
-      - "5432"
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 
   redis:
-    image: redis:6.2
-    command: redis-server
+    image: redis:7
+    restart: always
     ports:
       - "6379:6379"
-    env_file:
-      - ./.env
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - my_network
 
-
-  celery:
-    build: .
-    networks:
-      - my_network
-    command: celery -A config worker --loglevel=info --pool=solo
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    env_file:
-      - ./.env
-
-  celery_beat:
-    build: .
-    networks:
-      - my_network
-    command: celery -A config beat -l DEBUG
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      celery:
-        condition: service_started
-    env_file:
-      - ./.env
-
-networks:
-  my_network:
-    driver: bridge
 volumes:
-  postgres_data:
-  static_volume:
+  pgdata:
