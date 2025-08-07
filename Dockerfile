@@ -2,7 +2,7 @@
 FROM python:3.13.3
 
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=DjangoDRF.settings
+ENV DJANGO_SETTINGS_MODULE=DjangoDRF.config.settings
 
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
