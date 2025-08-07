@@ -1,6 +1,9 @@
 # Указываем базовый образ
 FROM python:3.13.3
 
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=DjangoDRF.settings
+
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
@@ -12,8 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 
-
-RUN mkdir -p /lms/media
+# Порт, который будет использовать контейнер
+EXPOSE 8000
 
 
 # Определяем команду для запуска приложения
