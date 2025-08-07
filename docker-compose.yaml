@@ -1,45 +1,44 @@
 version: '3.8'
 
 services:
-  backend:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/app
-    ports:
-      - "8000:8000"
-    environment:
-      SECRET_KEY: dev-key
-      DEBUG: 'True'
-      POSTGRES_DB: DjangoDRF
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      DB_HOST: db
-      DB_PORT: 5432
-      STRIPE_SECRET_KEY: settings.STRIPE_SECRET_KEY
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
+    backend:
+        build: .
+        command: python manage.py runserver 0.0.0.0:8000
+            - .:/app
+        ports:
+            - "8000:8000"
+        environment:
+            SECRET_KEY: settings.SECRET_KEY
+            DEBUG: 'True'
+            POSTGRES_DB: settings.POSTGRES_DB
+            POSTGRES_USER: settings.POSTGRES_USER
+            POSTGRES_PASSWORD: settings.POSTGRES_PASSWORD
+            DB_HOST: settings.DB_HOST
+            DB_PORT: settings.DB_PORT
+            STRIPE_SECRET_KEY: settings.STRIPE_SECRET_KEY
+            CELERY_BROKER_URL: redis://redis:6379/0
+            CELERY_RESULT_BACKEND: redis://redis:6379/0
+        depends_on:
+            - db
+            - redis
 
-  db:
-    image: postgres:17
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    db:
+        image: postgres:16
+        restart: always
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: settings.POSTGRES_DB
+            POSTGRES_USER: settings.POSTGRES_USER
+            POSTGRES_PASSWORD: settings.POSTGRES_PASSWORD
 
-  redis:
-    image: redis:6.2
-    restart: always
-    ports:
-      - "6379:6379"
+    redis:
+        image: redis:6.2
+        restart: always
+        ports:
+            - "6379:6379"
 
 volumes:
-  pgdata:
+    pgdata:
