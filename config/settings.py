@@ -93,7 +93,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": '/var/run/postgresql',
+        "HOST": '/var/run/postgresql/.s.PGSQL.5432',
         "PORT": os.getenv("DB_PORT"),
         "PASSWORD_EMAIL": os.getenv("PASSWORD"),
     }
