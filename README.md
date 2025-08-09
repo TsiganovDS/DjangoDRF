@@ -1,7 +1,7 @@
 # Django REST API с CI/CD и деплоем
 ## Развёртывание на сервере
 ### 1. Подключитесь к серверу по SSH:
-#### ssh -i ~/.ssh/id_ed25519 test@51.250.39.241
+#### ssh -i ~/.ssh/id_ed25519 test@158.160.185.151
 ### 2. Клонируйте репозиторий:
 #### git clone https://github.com/TsiganovDS/DjangoDRF
 #### cd DjangoDRF
