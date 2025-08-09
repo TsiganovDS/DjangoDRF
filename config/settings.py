@@ -90,12 +90,11 @@ STRIPE_PUBLISH_ABLE_KEY = os.getenv("STRIPE_PUBLISH_ABLE_KEY")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "POSTGRES_DB": os.getenv("POSTGRES_DB"),
-        "POSTGRES_USER": os.getenv("POSTGRES_USER"),
-        "POSTGRES_PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "PASSWORD": os.getenv("PASSWORD"),
-        "DB_HOST": os.getenv("DB_HOST"),
-        "DB_PORT": os.getenv("DB_PORT"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": '/var/run/postgresql',
+        "PASSWORD_EMAIL": os.getenv("PASSWORD"),
     }
 }
 
@@ -186,3 +185,4 @@ CELERY_TIMEZONE = "Australia/Tasmania"
 CELERY_TASK_TRACK_STARTED = True
 
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
