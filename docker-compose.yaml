@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+    backend:
+        build: .
+        command: python manage.py runserver 0.0.0.0:8000
+            - .:/app
+        ports:
+            - "8000:8000"
+        environment:
+            SECRET_KEY: ${SECRET_KEY}
+            DEBUG: 'True'
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
+            STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+            CELERY_BROKER_URL: redis://redis:6379/0
+            CELERY_RESULT_BACKEND: redis://redis:6379/0
+        depends_on:
+            - db
+            - redis
+
+    db:
+        image: postgres:16
+        restart: always
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    redis:
+        image: redis:6.2
+        restart: always
+        ports:
+            - "6379:6379"
+
+volumes:
+    pgdata:
