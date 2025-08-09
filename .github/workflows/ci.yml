@@ -43,7 +43,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/feature10'
+    if: github.ref == 'refs/heads/feature11'
 
     steps:
       - name: Deploy via SSH
@@ -55,6 +55,6 @@ jobs:
           script: |
             cd /home/Dmitriy/DjangoDRF
             git reset --hard HEAD
-            git pull origin feature10
+            git pull origin feature11
             docker-compose down
             docker-compose up -d --build
